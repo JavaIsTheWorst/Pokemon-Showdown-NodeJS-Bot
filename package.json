@@ -1,0 +1,12 @@
+{
+  "name": "pokemon-showdown-bot",
+  "version": "0.0.0",
+  "description": "A simple Pokemon Showdown! Bot",
+  "dependencies": {
+    "colors": "1.1.2",
+    "fs": "0.0.2",
+    "http": "0.0.0",
+    "querystring": "0.2.0",
+    "websocket": "1.0.24"
+  }
+}
