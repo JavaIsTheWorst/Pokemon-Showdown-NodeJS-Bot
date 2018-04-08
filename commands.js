@@ -2,6 +2,7 @@
 
 const Config = require('./config.js');
 const Gesti = require('./gesti.js');
+const Hastebin = require('./hastebin.js');
 const Mafia = require('./mafia.js');
 const Triggers = require('./triggers.js');
 const Util = require('./util.js');
@@ -9,15 +10,26 @@ const Util = require('./util.js');
 const fs = require('fs');
 
 const simpleCommands = [
-  new Triggers.Command(new Triggers.Trigger(/github please/i), function (conn, room, username, target) {
-    Util.pm(conn, Config.commandColor, username, "https://github.com/JavaIsTheWorst/Pokemon-Showdown-Bot");
-  })];
+  new Triggers.Command(new Triggers.Trigger(/github please/i), (conn, room, username, target) =>
+    Util.pm(conn, Config.commandColor, username, "https://github.com/JavaIsTheWorst/Pokemon-Showdown-NodeJS-Bot")),
+  new Triggers.Command(new Triggers.Trigger(/^\/invite /, Triggers.PermConfig.OWNERONLY), (conn, room, username, target) => {
+    if (room === 'pm') {
+      Util.useGlobalCommand(conn, Config.commandColor, '/j ' + target);
+    }
+  })
+];
 
 const generalCommands = [
-  new Triggers.Command(new Triggers.Trigger(/^sayraw /i), function (room, username, target) {
-    Util.send(conn, Config.commandColor, target);
+  new Triggers.Command(new Triggers.Trigger(/^sayraw /i), (conn, room, username, target) =>
+    Util.send(conn, Config.commandColor, target)),
+  new Triggers.Command(new Triggers.Trigger(/^eval /, Triggers.PermConfig.OWNERONLY), (conn, room, username, target) => {
+    try {
+      console.log(eval(target));
+    } catch (e) {
+      console.log('EVAL ERROR: ' + e.toString());
+    }
   }),
-  new Triggers.Command(new Triggers.Trigger(/in this room, /i, Triggers.PermConfig.OWNERONLY), function(conn, room, username, target) {
+  new Triggers.Command(new Triggers.Trigger(/in this room, /i, Triggers.PermConfig.OWNERONLY), (conn, room, username, target) => {
     const partsList = parts.split(' -> ');
     if (partsList.length >= 2) {
       fs.readFile('./roomcommands.txt', 'utf8', function(err, data) {
@@ -27,7 +39,7 @@ const generalCommands = [
       });
     }
   }),
-  new Triggers.Command(new Triggers.Trigger(/delete relation /i, Triggers.PermConfig.OWNERONLY), function(conn, room, username, target) {
+  new Triggers.Command(new Triggers.Trigger(/delete relation /i, Triggers.PermConfig.OWNERONLY), (conn, room, username, target) => {
     const partsList = parts.split(' -> ');
     if (partsList.length >= 1) {
       fs.readFile('./roomcommands.txt', 'utf8', function(err, data) {
@@ -36,12 +48,8 @@ const generalCommands = [
         fs.writeFile('./roomcommands.txt', updatedCommands);
       });
     }
-  }),
-  new Triggers.Command(new Triggers.Trigger(/^\/invite /, Triggers.PermConfig.OWNERONLY), function(conn, room, username, target) {
-    if (room === 'pm') {
-      Util.useGlobalCommand(conn, Config.commandColor, '/j ' + target);
-    }
-  })];
+  })
+];
 
 const completeCommandsList = [...simpleCommands, ...generalCommands, ...Gesti.gestiCommands, ...Mafia.mafiaCommands];
 

@@ -18,7 +18,7 @@ module.exports = {
       const fitsPerms = (this.permConfig === module.exports.PermConfig.ALLUSERS || Util.toId(username) === Util.toId(Config.owner)) && Util.toId(username) !== Util.toId(Config.username);
       const regexMatch = this.triggerRegex.exec(message);
       return regexMatch === null ? {matched: false, matchedText: "", after: ""}
-                                 : {matched: fitsPerms, matchedText: regexMatch[0], after: message.split(regexMatch.index + regexMatch[0].length)}
+                                 : {matched: fitsPerms, matchedText: regexMatch[0], after: message.slice(regexMatch.index + regexMatch[0].length)}
     }
   },
   Command: class {
